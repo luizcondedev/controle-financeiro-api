@@ -35,7 +35,7 @@ public class UserController {
 
     @PatchMapping
     public  ResponseEntity<UserResponseDTO> updateUser(@RequestParam("id") Long id,
-                                                       @RequestBody UserRequestDTO dto){
+                                                       @Valid @RequestBody UserRequestDTO dto){
         return ResponseEntity.ok(service.updateUser(dto, id));
     }
 
