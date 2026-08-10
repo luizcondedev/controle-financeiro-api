@@ -2,7 +2,6 @@ package dev.luizconde.controlefinanceiroapi.controller;
 
 import dev.luizconde.controlefinanceiroapi.dto.UserRequestDTO;
 import dev.luizconde.controlefinanceiroapi.dto.UserResponseDTO;
-import dev.luizconde.controlefinanceiroapi.entity.User;
 import dev.luizconde.controlefinanceiroapi.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +24,24 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> findAllUsers(){
+
         return ResponseEntity.ok(service.findAllUsers());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponseDTO> findUserById(@PathVariable Long id){
+        return ResponseEntity.ok(service.findUserById(id));
+    }
+
+    @PatchMapping
+    public  ResponseEntity<UserResponseDTO> updateUser(@RequestParam("id") Long id,
+                                                       @RequestBody UserRequestDTO dto){
+        return ResponseEntity.ok(service.updateUser(dto, id));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteUser(@RequestParam("id") Long id){
+        service.deleteUser(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

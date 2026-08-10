@@ -4,7 +4,9 @@ import dev.luizconde.controlefinanceiroapi.dto.UserRequestDTO;
 import dev.luizconde.controlefinanceiroapi.dto.UserResponseDTO;
 import dev.luizconde.controlefinanceiroapi.entity.User;
 import dev.luizconde.controlefinanceiroapi.exception.ConflictException;
+import dev.luizconde.controlefinanceiroapi.exception.ResourceNotFoundException;
 import dev.luizconde.controlefinanceiroapi.mapper.UserMapper;
+import dev.luizconde.controlefinanceiroapi.mapper.UserUpdateMapper;
 import dev.luizconde.controlefinanceiroapi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final UserUpdateMapper userUpdateMapper;
 
     public UserResponseDTO createUser(UserRequestDTO requestDTO){
         if(userRepository.existsByEmail(requestDTO.email())){
@@ -34,5 +37,33 @@ public class UserService {
         return userList.stream()
                 .map(userMapper::toResponseDto)
                 .toList();
+    }
+
+    public UserResponseDTO findUserById(Long id){
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("User not Found by Id: " + id)
+        );
+
+        return userMapper.toResponseDto(user);
+    }
+
+    public UserResponseDTO updateUser(UserRequestDTO dto,
+                                      Long id){
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("User not Found by Id: " + id)
+        );
+
+        userUpdateMapper.userUpdate(dto, user);
+        return userMapper.toResponseDto(
+                userRepository.save(user)
+        );
+    }
+
+    public void deleteUser(Long id){
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("User not Found by Id: " + id)
+        );
+
+        userRepository.delete(user);
     }
 }
