@@ -2,6 +2,7 @@ package dev.luizconde.controlefinanceiroapi.service;
 
 import dev.luizconde.controlefinanceiroapi.dto.UserRequestDTO;
 import dev.luizconde.controlefinanceiroapi.dto.UserResponseDTO;
+import dev.luizconde.controlefinanceiroapi.dto.UserUpdateRequestDTO;
 import dev.luizconde.controlefinanceiroapi.entity.User;
 import dev.luizconde.controlefinanceiroapi.exception.ConflictException;
 import dev.luizconde.controlefinanceiroapi.exception.ResourceNotFoundException;
@@ -53,11 +54,15 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponseDTO updateUser(UserRequestDTO dto,
+    public UserResponseDTO updateUser(UserUpdateRequestDTO dto,
                                       Long id){
         User user = userRepository.findById(id).orElseThrow(
                 () -> new UserNotFoundException("User not Found by Id: " + id)
         );
+
+        if(dto.email() != null && userRepository.existsByEmailAndIdNot(dto.email(), id)){
+            throw new ConflictException("Email already in use");
+        }
 
         userUpdateMapper.userUpdate(dto, user);
         return userMapper.toResponseDto(user);

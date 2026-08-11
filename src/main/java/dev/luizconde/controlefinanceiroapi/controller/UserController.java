@@ -2,6 +2,7 @@ package dev.luizconde.controlefinanceiroapi.controller;
 
 import dev.luizconde.controlefinanceiroapi.dto.UserRequestDTO;
 import dev.luizconde.controlefinanceiroapi.dto.UserResponseDTO;
+import dev.luizconde.controlefinanceiroapi.dto.UserUpdateRequestDTO;
 import dev.luizconde.controlefinanceiroapi.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +36,7 @@ public class UserController {
 
     @PatchMapping
     public  ResponseEntity<UserResponseDTO> updateUser(@RequestParam("id") Long id,
-                                                       @Valid @RequestBody UserRequestDTO dto){
+                                                       @Valid @RequestBody UserUpdateRequestDTO dto){
         return ResponseEntity.ok(service.updateUser(dto, id));
     }
 
