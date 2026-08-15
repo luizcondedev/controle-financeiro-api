@@ -118,5 +118,4 @@ public class AccountService {
 
         return "The account " + account.getName() + " type " + account.getAccountType() + " is now inactive.";
     }
-
 }
